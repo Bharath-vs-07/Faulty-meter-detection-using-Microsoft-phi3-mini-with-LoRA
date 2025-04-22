@@ -30,4 +30,4 @@ This project detects **faulty or tampered smart meters** and identifies the **ro
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/Bharath-vs-07/Fault-meter-detection-using-Microsoft-phi-3-mini-with-LoRA.git
+git clone https://github.com/Bharath-vs-07/Faulty-meter-detection-using-Microsoft-phi3-mini-with-LoRA.git
