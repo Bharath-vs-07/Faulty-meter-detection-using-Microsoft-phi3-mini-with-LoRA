@@ -1,0 +1,333 @@
+<!-- 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        /* Reset some basic styles */
+        body, h2, ul, li {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to right, #6A82FB, #FC5C7D);
+            font-family: Arial, sans-serif;
+        }
+        .login-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 0.8s ease-out forwards;
+            width: 100%;
+            max-width: 400px;
+            transform: translateY(50px);
+            opacity: 0;
+        }
+        .login-container h2 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+        .login-container ul {
+            margin-bottom: 20px;
+        }
+        .login-container li {
+            background-color: #ffdddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-left: 5px solid #ff5c5c;
+            border-radius: 4px;
+            animation: slideIn 0.5s ease-out forwards;
+        }
+        .login-container label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .login-container input[type="text"],
+        .login-container input[type="password"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+        .login-container input[type="text"]:focus,
+        .login-container input[type="password"]:focus {
+            border-color: #6A82FB;
+        }
+        .login-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #6A82FB;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        .login-container button:hover {
+            background-color: #FC5C7D;
+        }
+        .login-container button:active {
+            transform: scale(0.98);
+        }
+        /* Keyframes for animations */
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const inputs = document.querySelectorAll('.login-container input');
+            inputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    input.style.borderColor = '#6A82FB';
+                });
+                input.addEventListener('blur', () => {
+                    input.style.borderColor = '#ddd';
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</body>
+</html>-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monkey Login</title>
+    <style>
+        /* Reset some basic styles */
+        body, h2, ul, li {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #353535;
+            font-family: Arial, sans-serif;
+        }
+        .login-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 0.8s ease-out forwards;
+            width: 100%;
+            max-width: 400px;
+            transform: translateY(50px);
+            opacity: 0;
+            text-align: center;
+        }
+        .login-container h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .login-container ul {
+            margin-bottom: 20px;
+        }
+        .login-container li {
+            background-color: #ffdddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-left: 5px solid #ff5c5c;
+            border-radius: 4px;
+            animation: slideIn 0.5s ease-out forwards;
+        }
+        .login-container label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .login-container input[type="text"],
+        .login-container input[type="password"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+        .login-container input[type="text"]:focus,
+        .login-container input[type="password"]:focus {
+            border-color: #6A82FB;
+        }
+        .login-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #6A82FB;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        .login-container button:hover {
+            background-color: #FC5C7D;
+        }
+        .login-container button:active {
+            transform: scale(0.98);
+        }
+        /* Keyframes for animations */
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        .animcon {
+            background-color: rgb(32, 32, 32);
+            overflow: hidden;
+            margin-top: 20px;
+            height: 170px;
+            width: 170px;
+            border-radius: 60%;
+            background-image: url(https://raw.githubusercontent.com/naaficodes/Monkey-Login/master/images/monkey.gif);
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            background-position: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, .2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .animcon img {
+            margin-top: 110%;
+            height: 170px;
+            width: 170px;
+            transition: 1s;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const inputs = document.querySelectorAll('.login-container input');
+            const x = document.getElementById("hands");
+            const y = document.getElementById("animcon");
+
+            function closeye() {
+                y.style.backgroundImage = "url(https://raw.githubusercontent.com/naaficodes/Monkey-Login/master/images/monkey_pwd.gif)";
+                x.style.marginTop = "0%";
+            }
+
+            function openeye() {
+                y.style.backgroundImage = "url(https://raw.githubusercontent.com/naaficodes/Monkey-Login/master/images/monkey.gif)";
+                x.style.marginTop = "110%";
+            }
+
+            inputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    if (input.type === 'password') {
+                        closeye();
+                    } else {
+                        openeye();
+                    }
+                    input.style.borderColor = '#6A82FB';
+                });
+                input.addEventListener('blur', () => {
+                    input.style.borderColor = '#ddd';
+                    if (input.type === 'password') {
+                        openeye();
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="login-container">
+        <div class="animcon" id="animcon">
+            <img id="hands" src="https://raw.githubusercontent.com/naaficodes/Monkey-Login/master/images/hands.png"/>
+        </div>
+        <h2>Login</h2>
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <style>
+        /* Colors */
+        :root {
+            --darkBlue: #217093;
+            --medBlue: #4eb8dd;
+            --lightBlue: #ddf1fa;
+            --inputBG: #f3fafd;
+        }
+
+        html {width: 100%; height: 100%;}
+        body {
+            background-color: #eff3f4;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            font-size: 16px;
+            font-family: 'Source Sans Pro', sans-serif;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+        }
+        form {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            background-color: #FFF;
+            margin: 0;
+            padding: 2.25em;
+            box-sizing: border-box;
+            border: solid 1px #DDD;
+            border-radius: .5em;
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+        .svgContainer {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 1em;
+            border-radius: 50%;
+            background: none;
+            border: solid 2.5px #3A5E77;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .svgContainer div {
+            position: relative;
+            width: 100%;
+            height: 0;
+            overflow: hidden;
+            padding-bottom: 100%;
+        }
+        .svgContainer .mySVG {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        .inputGroup {
+            margin: 0 0 2em;
+            padding: 0;
+            position: relative;
+        }
+        .inputGroup:last-of-type {
+            margin-bottom: 0;
+        }
+        label {
+            margin: 0 0 12px;
+            display: block;
+            font-size: 1.25em;
+            color: var(--darkBlue);
+            font-weight: 700;
+            font-family: inherit;
+        }
+        input[type='email'], input[type="text"], input[type='password'] {
+            display: block;
+            margin: 0;
+            padding: 0 1em 0;
+            background-color: var(--inputBG);
+            border: solid 2px var(--darkBlue);
+            border-radius: 4px;
+            -webkit-appearance: none;
+            box-sizing: border-box;
+            width: 100%;
+            height: 65px;
+            font-size: 1.55em;
+            color: #353538;
+            font-weight: 600;
+            font-family: inherit;
+            transition: box-shadow .2s linear, border-color .25s ease-out;
+        }
+        input[type='email'], input[type="text"] {
+            padding: 14px 1em 0px;
+        }
+        button {
+            display: block;
+            margin: 0;
+            padding: .65em 1em 1em;
+            background-color: var(--medBlue);
+            border: none;
+            border-radius: 4px;
+            box-sizing: border-box;
+            box-shadow: none;
+            width: 100%;
+            height: 65px;
+            font-size: 1.55em;
+            color: #FFF;
+            font-weight: 600;
+            font-family: inherit;
+            transition: background-color .2s ease-out;
+        }
+        button:hover, button:active {
+            background-color: var(--darkBlue);
+        }
+        .inputGroup1 .helper {
+            position: absolute;
+            z-index: 1;
+            font-family: inherit;
+        }
+        .inputGroup1 .helper1 {
+            top: 0;
+            left: 0;
+            transform: translate(1.4em, 2.6em) scale(1);
+            transform-origin: 0 0;
+            color: var(--darkBlue);
+            font-size: 1.25em;
+            font-weight: 400;
+            opacity: .65;
+            pointer-events: none;
+            transition: transform .2s ease-out, opacity .2s linear;
+        }
+        .focusWithText .helper {
+            transform: translate(1.4em, 2.0em) scale(.65);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <h2>Login</h2>
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="svgContainer">
+            <div class="mySVG">
+                <!-- Sample SVG for Yeti -->
+                <svg viewBox="0 0 200 200">
+                    <circle cx="100" cy="100" r="50" fill="#217093" />
+                    <!-- Add more SVG elements to create the Yeti -->
+                </svg>
+            </div>
+        </div>
+        <div class="inputGroup">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="inputGroup">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit">Login</button>
+    </form>
+    <script>
+        var email = document.querySelector('#username'),
+            password = document.querySelector('#password'),
+            mySVG = document.querySelector('.svgContainer'),
+            eyeL = document.querySelector('.eyeL'),
+            eyeR = document.querySelector('.eyeR'),
+            nose = document.querySelector('.nose'),
+            mouth = document.querySelector('.mouth');
+        var caretPos, curEmailIndex, screenCenter, svgCoords, eyeMaxHorizD = 20, eyeMaxVertD = 10, noseMaxHorizD = 23, noseMaxVertD = 10, dFromC, eyeDistH, eyeLDistV, eyeRDistV, eyeDistR, mouthStatus = "small";
+
+        function getCoord(e) {
+            var carPos = email.selectionEnd,
+                div = document.createElement('div'),
+                span = document.createElement('span'),
+                copyStyle = getComputedStyle(email),
+                emailCoords = {}, caretCoords = {}, centerCoords = {};
+            [].forEach.call(copyStyle, function(prop){
+                div.style[prop] = copyStyle[prop];
+            });
+            div.style.position = 'absolute';
+            document.body.appendChild(div);
+            div.textContent = email.value.substr(0, carPos);
+            span.textContent = email.value.substr(carPos) || '.';
+            div.appendChild(span);
+            
+            emailCoords = getPosition(email);
+            caretCoords = getPosition(span);
+            centerCoords = getPosition(mySVG);
+            svgCoords = getPosition(mySVG);
+            screenCenter = centerCoords.x + (mySVG.offsetWidth / 2);
+            caretPos = caretCoords.x + emailCoords.x;
+            
+            dFromC = screenCenter - caretPos;
+            var pFromC = Math.round((caretPos / screenCenter) * 100) / 100;
+            if(pFromC < 1) {
+                
+            } else if(pFromC > 1) {
+                pFromC -= 2;
+                pFromC = Math.abs(pFromC);
+            }
+
+            eyeDistH = -dFromC * .05;
+            if(eyeDistH > eyeMaxHorizD) {
+                eyeDistH = eyeMaxHorizD;
+            } else if(eyeDistH < -eyeMaxHorizD) {
+                eyeDistH = -eyeMaxHorizD;
+            }
+            
+            var eyeLCoords = {x: svgCoords.x + 84, y: svgCoords.y + 76};
+            var eyeRCoords = {x: svgCoords.x + 113, y: svgCoords.y + 76};
+            var noseCoords = {x: svgCoords.x + 97, y: svgCoords.y + 81};
+            var mouthCoords = {x: svgCoords.x + 100, y: svgCoords.y + 100};
+            var eyeCoords = {left: eyeLCoords, right: eyeRCoords};
+            
+            if (email.value.length > 0) {
+                eyeLDistV = (eyeLCoords.y - emailCoords.y) - 10;
+                eyeRDistV = (eyeRCoords.y - emailCoords.y) - 10;
+                noseMaxVertD = Math.max(eyeLDistV, eyeRDistV);
+                noseMaxVertD = Math.min(noseMaxVertD, 20);
+                
+                dFromC = (eyeDistH / 1.5);
+                var moveX = dFromC;
+                var moveY = Math.round((eyeDistH / 2) - (noseMaxVertD / 2));
+
+                eyeL.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                eyeR.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                nose.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                mouth.style.transform = `translate(${moveX}px, ${moveY}px)`;
+
+            } else {
+                eyeL.style.transform = `translate(0px, 0px)`;
+                eyeR.style.transform = `translate(0px, 0px)`;
+                nose.style.transform = `translate(0px, 0px)`;
+                mouth.style.transform = `translate(0px, 0px)`;
+            }
+        }
+        
+        function getPosition(element) {
+            var xPos = 0, yPos = 0;
+            while (element) {
+                xPos += (element.offsetLeft - element.scrollLeft + element.clientLeft);
+                yPos += (element.offsetTop - element.scrollTop + element.clientTop);
+                element = element.offsetParent;
+            }
+            return {x: xPos, y: yPos};
+        }
+        
+        function handleFocus(e) {
+            e.target.closest('.inputGroup').classList.add('focusWithText');
+            getCoord();
+        }
+        
+        function handleBlur(e) {
+            e.target.closest('.inputGroup').classList.remove('focusWithText');
+            getCoord();
+        }
+        
+        email.addEventListener('input', getCoord);
+        password.addEventListener('input', getCoord);
+        email.addEventListener('focus', handleFocus);
+        password.addEventListener('focus', handleFocus);
+        email.addEventListener('blur', handleBlur);
+        password.addEventListener('blur', handleBlur);
+    </script>
+</body>
+</html>

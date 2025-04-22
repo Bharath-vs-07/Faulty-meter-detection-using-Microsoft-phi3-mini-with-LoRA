@@ -1,0 +1,60 @@
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+
+# Django
+*.log
+*.pot
+*.pyc
+*.pyo
+*.sqlite3
+*.db
+*.bak
+*.swp
+
+# Django migrations
+*/migrations/*
+!*/migrations/__init__.py
+
+# Environment files
+.env
+*.env
+
+# Node.js 
+node_modules/
+
+# Microsoft Phi and LoRA adapter specific
+*.ckpt
+*.bin
+*.safetensors
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-workspace
+
+# Build directories
+dist/
+build/
+
+# Dependency directories (for Python)
+*.egg-info/
+.eggs/
+
+# Docker (if used)
+docker-compose.override.yml
+Dockerfile*
+.dockerignore
+

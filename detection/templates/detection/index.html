@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meter Tampering Detection - AI Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: #f9f9f9;
+        }
+
+        header {
+            position: relative; /* Add position relative to position the logout button */
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logout-btn {
+            position: absolute; /* Position it within the header */
+            top: 20px; /* Same as the header padding */
+            right: 20px; /* Align to the right */
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .container {
+            display: flex;
+            padding: 20px;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            padding: 15px;
+            color: white;
+            height: 100vh;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            padding: 10px;
+            border-bottom: 1px solid #34495e;
+            cursor: pointer;
+        }
+
+        .sidebar ul li:hover {
+            background-color: #34495e;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            background-color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-content h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #27ae60;
+        }
+
+        .card p {
+            color: #7f8c8d;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #bdc3c7;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #34495e;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .actions button {
+            padding: 10px 15px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .actions button.detect {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .actions button.report {
+            background-color: #2980b9;
+            color: white;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 1px solid #bdc3c7;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 8px;
+            z-index: 1000;
+        }
+
+        .popup button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 500;
+        }
+
+        .card input[type="file"] {
+            margin-top: 10px;
+        }
+                /* Style for the chatbot icon */
+        #chatbot-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            cursor: pointer;
+            z-index: 1000; /* Ensure it's on top of other content */
+        }
+
+        #chatbot-icon img {
+            width: 60px; /* Adjusted size for better visibility */
+            height: auto;
+        }
+
+        /* Style for the chatbot container */
+        #chatbot-container {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 320px;
+            height: 450px;
+            border-radius: 10px; /* Rounded corners for a modern look */
+            background-color: #f9f9f9; /* Light background */
+            border: 2px solid #0073e6; /* Blue border to highlight the chatbot */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+            display: none; /* Initially hidden */
+            z-index: 1000; /* Ensure it is on top of other content */
+        }
+
+        #chatbot-container iframe {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px; /* Match the container's rounded corners */
+            border: none;
+        }
+
+        /* Custom hover effect for the icon */
+        #chatbot-icon:hover img {
+            transform: scale(1.1);
+            transition: transform 0.2s ease-in-out;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        Meter Tampering Detection
+        <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" style="float: right; background-color: transparent; border: none; color: white; cursor: pointer;">
+                Logout
+            </button>
+        </form>
+    </header>
+    <div class="container">
+        <div class="sidebar">
+            <ul>
+                <li><button onclick="location.href='detection\\templates\\detection\\index.html'">Dashboard</button></li>
+                <li><button onclick="location.href='https://app.powerbi.com/reportEmbed?reportId=dbedbdc1-6f3d-401a-9d8d-1e7d16dc41ab&autoAuth=true&embeddedDemo=true'">Data Overview</button></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <h2>Overview</h2>
+            
+            <!-- Upload CSV File Section -->
+            <div class="card">
+                <h3>Upload CSV File</h3>
+                <form id="upload-form" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="file" id="csv_file_input" name="csv_file" accept=".csv">
+                    <p id="estimated_time">Estimated processing time: </p>
+                    <button type="button" id="process-button" onclick="processFile()">Upload and Process</button>
+                </form>
+            </div>
+            
+            <!-- Detection Results Section -->
+            <div class="card">
+                <h3>Detection Results</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Meter IDs</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category, meter_ids in tampering_meter_ids.items %}
+                            <tr>
+                                <td>{{ category }}</td>
+                                <td>{{ meter_ids|join:', ' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% if processed_file_url %}
+                    <a href="{% url 'download_file' processed_file_url %}" download>Download Processed CSV</a>
+                {% endif %}
+            </div>
+
+            <!-- Search Meter ID Section -->
+            <div class="card">
+                <h3>Search Meter ID</h3>
+                <input type="text" id="search-meter-id" placeholder="Enter Meter ID">
+                <button onclick="searchMeterId()">Search</button>
+                <div id="search-results"></div>
+            </div>
+            
+        </div>
+    </div>
+    <!-- Chatbot icon -->
+    <div id="chatbot-icon">
+        <!-- Replace this with your own image path -->
+        <img src="https://cdn1.vectorstock.com/i/1000x1000/72/55/electrician-symbol-vector-737255.jpg" alt="Chatbot" onclick="toggleChatbot()">
+    </div>
+
+    <!-- Chatbot container -->
+    <div id="chatbot-container">
+        <!-- Replace 'path/to/chatbot' with the actual path or URL of your chatbot -->
+        <iframe src="http://localhost:8501"></iframe>
+    </div>
+
+    <script>
+        // Function to handle file input change and estimate processing time
+        document.getElementById('csv_file_input').addEventListener('change', function() {
+            var fileInput = this;
+            var formData = new FormData();
+            formData.append('csv_file', fileInput.files[0]);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '{% url "calculate_processing_time" %}', true);
+
+            // Add CSRF token header for Django
+            xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    document.getElementById('estimated_time').innerText = 'Estimated processing time: ' + response.estimated_time + ' seconds';
+                } else {
+                    document.getElementById('estimated_time').innerText = 'Error calculating time.';
+                }
+            };
+            xhr.send(formData);
+        });
+
+        // Function to process the uploaded file when the button is clicked
+        function processFile() {
+            document.getElementById('upload-form').submit();
+        }
+
+        // Function for searching meter ID
+        function searchMeterId() {
+            var meterId = document.getElementById('search-meter-id').value;
+            var searchResultsDiv = document.getElementById('search-results');
+
+            fetch(`/search_meter_id/?meter_id=${encodeURIComponent(meterId)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        searchResultsDiv.innerHTML = `<p>${data.error}</p>`;
+                    } else {
+                        var resultHtml = '<table><thead><tr>';
+                        for (var key in data.result[0]) {
+                            resultHtml += `<th>${key}</th>`;
+                        }
+                        resultHtml += '</tr></thead><tbody>';
+                        data.result.forEach(row => {
+                            resultHtml += '<tr>';
+                            for (var key in row) {
+                                // resultHtml += `<td>${row[key]}</td>`;
+                                if (key === 'Location') {
+                                    resultHtml += `<td><a href="${row[key]}">${row[key]}</a></td>`;
+                                } else {
+                                    resultHtml += `<td>${row[key]}</td>`;
+                                }
+                            }
+                            resultHtml += '</tr>';
+                        });
+                        resultHtml += '</tbody></table>';
+                        searchResultsDiv.innerHTML = resultHtml;
+                    }
+                })
+                .catch(error => {
+                    searchResultsDiv.innerHTML = `<p>Error occurred while searching: ${error}</p>`;
+                });
+        }
+        // Function to toggle the chatbot visibility
+        function toggleChatbot() {
+            var chatbotContainer = document.getElementById('chatbot-container');
+            if (chatbotContainer.style.display === 'none' || chatbotContainer.style.display === '') {
+                chatbotContainer.style.display = 'block';
+            } else {
+                chatbotContainer.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
